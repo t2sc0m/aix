@@ -132,6 +132,6 @@ func (a *CodexAdapter) buildArgs(req *Request, assembled string) []string {
 		args = append(args, "-C", req.Cwd)
 	}
 
-	args = append(args, assembled)
+	args = append(args, "--", assembled)
 	return args
 }

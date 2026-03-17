@@ -69,6 +69,9 @@ func TestCodexAdapter_Send_RawSuccess(t *testing.T) {
 	if !containsArg(mock.capturedArgs, "-s") {
 		t.Error("should include -s sandbox")
 	}
+	if !containsArg(mock.capturedArgs, "--") {
+		t.Error("should include -- separator before prompt")
+	}
 }
 
 func TestCodexAdapter_Send_WithModel(t *testing.T) {

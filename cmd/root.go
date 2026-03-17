@@ -87,6 +87,14 @@ func runAsk(cmd *cobra.Command, args []string) error {
 	cfg := config.Load()
 	model, sandbox, timeout := config.Resolve(cfg, flagModel, flagSandbox, flagTimeout)
 
+	// Validate sandbox
+	validSandboxes := map[string]bool{
+		"read-only": true, "workspace-write": true, "danger-full-access": true,
+	}
+	if !validSandboxes[sandbox] {
+		return &exitError{ExitGeneralError, fmt.Sprintf("invalid sandbox mode: %q (allowed: read-only, workspace-write, danger-full-access)", sandbox)}
+	}
+
 	// Read context file
 	var contextContent string
 	if contextFile != "" {
