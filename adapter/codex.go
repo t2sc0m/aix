@@ -63,8 +63,9 @@ func (a *CodexAdapter) sendWithOutput(ctx context.Context, req *Request, assembl
 	tmpFile.Close()
 	defer os.Remove(tmpPath)
 
-	args := a.buildArgs(req, assembled)
+	args := a.buildBaseArgs(req)
 	args = append(args, "-o", tmpPath)
+	args = append(args, "--", assembled)
 
 	result, err := a.runner.Run(ctx, "codex", args, nil)
 	if err != nil {
@@ -94,7 +95,8 @@ func (a *CodexAdapter) sendWithOutput(ctx context.Context, req *Request, assembl
 }
 
 func (a *CodexAdapter) sendRaw(ctx context.Context, req *Request, assembled string) (*Response, error) {
-	args := a.buildArgs(req, assembled)
+	args := a.buildBaseArgs(req)
+	args = append(args, "--", assembled)
 
 	result, err := a.runner.Run(ctx, "codex", args, nil)
 	if err != nil {
@@ -115,7 +117,9 @@ func (a *CodexAdapter) sendRaw(ctx context.Context, req *Request, assembled stri
 	}, nil
 }
 
-func (a *CodexAdapter) buildArgs(req *Request, assembled string) []string {
+// buildBaseArgs returns codex exec args without the prompt.
+// Callers append extra flags (e.g. -o) before adding "-- prompt".
+func (a *CodexAdapter) buildBaseArgs(req *Request) []string {
 	args := []string{"exec", "--ephemeral"}
 
 	if req.Model != "" {
@@ -132,6 +136,5 @@ func (a *CodexAdapter) buildArgs(req *Request, assembled string) []string {
 		args = append(args, "-C", req.Cwd)
 	}
 
-	args = append(args, "--", assembled)
 	return args
 }
