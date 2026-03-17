@@ -1,5 +1,7 @@
 # aix — AI eXchange CLI
 
+[한국어](README.ko.md) | [日本語](README.ja.md)
+
 Delegate tasks to AI CLI tools with context file injection.
 
 ```
